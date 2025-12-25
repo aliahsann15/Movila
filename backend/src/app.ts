@@ -4,8 +4,8 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import compression from 'compression';
 
-import routes from './routes';
-import errorHandler from './middleware/errorHandler';
+import metricsRoutes from './routes/metricsRoutes.js';
+import errorHandler from './middleware/errorHandler.js';
 
 const app: Application = express();
 
@@ -37,8 +37,20 @@ app.get('/health', (req: Request, res: Response) => {
   res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
+// Base API route
+app.get('/api', (req: Request, res: Response) => {
+  res.json({
+    message: 'Welcome to Movila API',
+    version: '1.0.0',
+    endpoints: {
+      health: '/health',
+      metrics: '/api/metrics'
+    }
+  });
+});
+
 // API routes
-app.use('/api', routes);
+app.use('/api/metrics', metricsRoutes);
 
 // 404 handler
 app.use((req: Request, res: Response) => {

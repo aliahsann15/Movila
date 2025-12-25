@@ -1,8 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
-import { ErrorResponse } from '../types';
 
 interface CustomError extends Error {
   statusCode?: number;
+}
+
+interface ErrorResponse {
+  success: false;
+  error: string;
+  details?: any;
+  stack?: string;
 }
 
 const errorHandler = (err: CustomError, req: Request, res: Response<ErrorResponse>, next: NextFunction): void => {

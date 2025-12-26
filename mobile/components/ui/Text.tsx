@@ -1,4 +1,4 @@
-import { Text as RNText, TextProps } from 'react-native';
+import { Text as RNText, TextProps, StyleSheet } from 'react-native';
 
 type CustomTextProps = TextProps & {
   className?: string;
@@ -6,10 +6,15 @@ type CustomTextProps = TextProps & {
 
 export default function Text({ className, style, ...props }: CustomTextProps) {
   return (
-    <RNText 
-      className={`text-foreground ${className || ''}`}
-      style={style}
+    <RNText
+      style={[styles.text, style]}
       {...props}
     />
   );
 }
+
+const styles = StyleSheet.create({
+  text: {
+    color: '#fffafa',
+  },
+});

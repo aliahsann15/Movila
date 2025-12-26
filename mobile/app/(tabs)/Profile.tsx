@@ -2,7 +2,7 @@ import Text from '@/components/ui/Text'
 import { icons } from '@/constants/icons'
 import { useRouter } from 'expo-router'
 import React from 'react'
-import { Alert, Image, ScrollView, TouchableOpacity, View } from 'react-native'
+import { Alert, Image, ScrollView, TouchableOpacity, View, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 const Profile = () => {
@@ -19,82 +19,82 @@ const Profile = () => {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
-      <ScrollView 
-        className="flex-1"
+    <SafeAreaView style={styles.container}>
+      <ScrollView
+        style={styles.scroll}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 20 }}
       >
         {/* Header */}
-        <View className="px-5 py-4 border-b border-gray-800">
-          <Text className="text-2xl font-bold">My Profile</Text>
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>My Profile</Text>
         </View>
 
         {/* Profile Card */}
-        <View className="px-5 py-6">
-          <View className="bg-gray-900 rounded-xl p-6 items-center">
-            <View className="w-24 h-24 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 items-center justify-center mb-4">
+        <View style={styles.sectionWrap}>
+          <View style={styles.card}>
+            <View style={styles.avatarBox}>
               <Image 
-                source={icons.profile} 
-                className="w-12 h-12"
+                source={icons.person}
+                style={{ width: 48, height: 48 }}
               />
             </View>
-            <Text className="text-xl font-bold">John Doe</Text>
-            <Text className="text-light-foreground mt-1">john.doe@example.com</Text>
-            <Text className="text-sm text-light-foreground mt-4">Movie Enthusiast • 2 years member</Text>
+            <Text style={styles.name}>John Doe</Text>
+            <Text style={styles.lightText}>john.doe@example.com</Text>
+            <Text style={[styles.lightText, styles.small, { marginTop: 16 }]}>Movie Enthusiast • 2 years member</Text>
           </View>
         </View>
 
         {/* Statistics */}
-        <View className="px-5">
-          <View className="flex-row gap-3 mb-6">
-            <View className="flex-1 bg-gray-900 rounded-lg p-4">
-              <Text className="text-light-foreground text-sm">Watched</Text>
-              <Text className="text-2xl font-bold text-cyan-400 mt-2">24</Text>
+        <View style={styles.sectionPad}>
+          <View style={styles.statsRow}>
+            <View style={[styles.statBox, { marginRight: 12 }]}>
+              <Text style={styles.lightSmall}>Watched</Text>
+              <Text style={styles.statValue}>24</Text>
             </View>
-            <View className="flex-1 bg-gray-900 rounded-lg p-4">
-              <Text className="text-light-foreground text-sm">Saved</Text>
-              <Text className="text-2xl font-bold text-cyan-400 mt-2">12</Text>
+            <View style={[styles.statBox, { marginRight: 12 }]}>
+              <Text style={styles.lightSmall}>Saved</Text>
+              <Text style={styles.statValue}>12</Text>
             </View>
-            <View className="flex-1 bg-gray-900 rounded-lg p-4">
-              <Text className="text-light-foreground text-sm">Rating Avg</Text>
-              <Text className="text-2xl font-bold text-cyan-400 mt-2">8.2</Text>
+            <View style={styles.statBox}>
+              <Text style={styles.lightSmall}>Rating Avg</Text>
+              <Text style={styles.statValue}>8.2</Text>
             </View>
           </View>
         </View>
 
         {/* Menu Items */}
-        <View className="px-5 mb-6">
-          <Text className="text-lg font-semibold mb-4">Settings</Text>
+        <View style={styles.menuWrap}>
+          <Text style={styles.menuTitle}>Settings</Text>
           
-          <TouchableOpacity className="bg-gray-900 rounded-lg p-4 mb-3 flex-row items-center justify-between">
+          <TouchableOpacity style={styles.menuItem}>
             <Text>Account Settings</Text>
-            <Text className="text-light-foreground">›</Text>
+            <Text style={styles.lightText}>›</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity className="bg-gray-900 rounded-lg p-4 mb-3 flex-row items-center justify-between">
+          <TouchableOpacity style={styles.menuItem}>
             <Text>Preferences</Text>
-            <Text className="text-light-foreground">›</Text>
+            <Text style={styles.lightText}>›</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity className="bg-gray-900 rounded-lg p-4 mb-3 flex-row items-center justify-between">
+          <TouchableOpacity style={styles.menuItem}>
             <Text>Notifications</Text>
-            <Text className="text-light-foreground">›</Text>
+            <Text style={styles.lightText}>›</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity className="bg-gray-900 rounded-lg p-4 mb-3 flex-row items-center justify-between">
+          <TouchableOpacity style={styles.menuItem}>
             <Text>About</Text>
-            <Text className="text-light-foreground">›</Text>
+            <Text style={styles.lightText}>›</Text>
           </TouchableOpacity>
         </View>
 
         {/* Logout Button */}
-        <View className="px-5 mb-20">
+        <View style={styles.logoutWrap}>
           <TouchableOpacity 
-            className="bg-red-600 rounded-lg p-4 items-center"
+            style={styles.logoutBtn}
             onPress={handleLogout}
           >
-            <Text className="text-white font-semibold">Logout</Text>
+            <Text style={{ color: '#ffffff', fontWeight: '600' }}>Logout</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -103,3 +103,104 @@ const Profile = () => {
 }
 
 export default Profile
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#040c1c',
+  },
+  scroll: {
+    flex: 1,
+  },
+  header: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderColor: '#1f2937',
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+  },
+  sectionWrap: {
+    paddingHorizontal: 20,
+    paddingVertical: 24,
+  },
+  card: {
+    backgroundColor: '#1e293b',
+    borderRadius: 12,
+    padding: 24,
+    alignItems: 'center',
+  },
+  avatarBox: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: '#1e293b',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  name: {
+    fontSize: 20,
+    fontWeight: '700',
+  },
+  lightText: {
+    color: '#94a3b8',
+    marginTop: 4,
+  },
+  small: {
+    fontSize: 14,
+  },
+  sectionPad: {
+    paddingHorizontal: 20,
+  },
+  statsRow: {
+    flexDirection: 'row',
+    marginBottom: 24,
+  },
+  statBox: {
+    flex: 1,
+    backgroundColor: '#1e293b',
+    borderRadius: 8,
+    padding: 16,
+  },
+  lightSmall: {
+    color: '#94a3b8',
+    fontSize: 14,
+  },
+  statValue: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#22d3ee',
+    marginTop: 8,
+  },
+  menuWrap: {
+    paddingHorizontal: 20,
+    marginBottom: 24,
+  },
+  menuTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 16,
+  },
+  menuItem: {
+    backgroundColor: '#1e293b',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  logoutWrap: {
+    paddingHorizontal: 20,
+    marginBottom: 80,
+  },
+  logoutBtn: {
+    backgroundColor: '#dc2626',
+    borderRadius: 8,
+    padding: 16,
+    alignItems: 'center',
+  },
+});

@@ -2,23 +2,23 @@ import { icons } from '@/constants/icons'
 import { images } from '@/constants/images'
 import { Tabs } from 'expo-router'
 import React from 'react'
-import { Image, ImageBackground, Text, View } from 'react-native'
+import { Image, ImageBackground, Text, View, StyleSheet } from 'react-native'
 
 const TabStyle = ({ focused, icon, title }: any) => {
     if (focused) {
         return (
             <ImageBackground
                 source={images.highlight}
-                className='flex flex-1 flex-row items-center justify-center mt-3.5 min-h-[3.7rem] min-w-[112px] rounded-full overflow-hidden'
+                style={styles.focusedTab}
             >
-                <Image source={icon} tintColor='#040c1c' className='size-5' />
-                <Text className="text-base font-medium ml-2">{title}</Text>
+                <Image source={icon} tintColor="#040c1c" style={styles.icon} />
+                <Text style={styles.focusedTitle}>{title}</Text>
             </ImageBackground>
         )
     }
     return (
-        <View className='size-full items-center justify-center rounded-full mt-3.5'>
-            <Image source={icon} tintColor='#fff' className='size-5' />
+        <View style={styles.unfocusedTab}>
+            <Image source={icon} tintColor="#fff" style={styles.icon} />
         </View>
     )
 }
@@ -93,3 +93,33 @@ const _layout = () => {
 }
 
 export default _layout
+
+const styles = StyleSheet.create({
+    focusedTab: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 14,
+        minHeight: 59,
+        minWidth: 112,
+        borderRadius: 9999,
+        overflow: 'hidden',
+    },
+    unfocusedTab: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 9999,
+        marginTop: 14,
+    },
+    icon: {
+        width: 20,
+        height: 20,
+    },
+    focusedTitle: {
+        fontSize: 16,
+        fontWeight: '500',
+        marginLeft: 8,
+        color: '#040c1c',
+    },
+});

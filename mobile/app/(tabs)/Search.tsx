@@ -6,7 +6,7 @@ import { fetchMovies } from '@/services/api'
 import useFetch from '@/services/useFetch'
 import React, { useEffect, useState } from 'react'
 import Text from '@/components/ui/Text'
-import { ActivityIndicator, FlatList, Image, View } from 'react-native'
+import { ActivityIndicator, FlatList, Image, View, StyleSheet } from 'react-native'
 
 const Search = () => {
   const [searchQuery, setSearchQuery] = useState('')
@@ -37,8 +37,8 @@ const Search = () => {
   }, [searchQuery]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <View className="flex-1 bg-background">
-      <Image source={images.bg} className="w-full absolute z-0" />
+    <View style={styles.container}>
+      <Image source={images.bg} style={styles.bgImage} />
 
       <FlatList
         data={movies}
@@ -57,11 +57,11 @@ const Search = () => {
         contentContainerStyle={{ paddingBottom: 100 }}
         ListHeaderComponent={
           <>
-            <View className='w-full flex-row justify-center mt-20'>
-              <Image source={icons.logo} className="w-32 h-32" />
+            <View style={styles.logoRow}>
+              <Image source={icons.logo} style={styles.logo} />
             </View>
 
-            <View className='my-5'>
+            <View style={styles.headerSpacing}>
               <SearchBar
                 placeholder="Search for a Movie"
                 value={searchQuery}
@@ -70,34 +70,83 @@ const Search = () => {
             </View>
 
             {loading && (
-              <ActivityIndicator size="large" color="#6afdff" className='my-5' />
+              <ActivityIndicator size="large" color="#6afdff" style={styles.headerSpacing} />
             )}
 
             {error && (
-              <Text className="text-red-500 text-center px-4 my-5">Error: {error?.message}</Text>
+              <Text style={styles.errorText}>Error: {error?.message}</Text>
             )}
 
             {!loading && !error && searchQuery.trim() && movies?.length > 0 && (
-              <Text className="text-xl mt-10 mb-5 font-bold">
+              <Text style={styles.resultsTitle}>
                 Search Results for {' '}
-                <Text className="text-accent">{`"${searchQuery}"`}</Text>
+                <Text style={styles.accentText}>{`"${searchQuery}"`}</Text>
               </Text>
             )}
           </>
         }
         ListEmptyComponent={
           !loading && !error ? (
-            <View className="mt-10 px-5 items-center">
+            <View style={styles.emptyBox}>
               <Text>
                 {searchQuery.trim() ? 'No movie found' : 'Search for a movie to see results'}
               </Text>
             </View>
           ) : null
         }
-        className="mt-2 pb-32 px-4"
+        style={styles.list}
       />
     </View >
   )
 }
 
 export default Search
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#040c1c',
+  },
+  bgImage: {
+    width: '100%',
+    position: 'absolute',
+    zIndex: 0,
+  },
+  logoRow: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 80,
+  },
+  logo: {
+    width: 128,
+    height: 128,
+  },
+  headerSpacing: {
+    marginVertical: 20,
+  },
+  errorText: {
+    color: '#ef4444',
+    textAlign: 'center',
+    paddingHorizontal: 16,
+    marginVertical: 20,
+  },
+  resultsTitle: {
+    fontSize: 20,
+    marginTop: 40,
+    marginBottom: 20,
+    fontWeight: '700',
+  },
+  accentText: {
+    color: '#6afdff',
+  },
+  emptyBox: {
+    marginTop: 40,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  list: {
+    marginTop: 8,
+    paddingHorizontal: 16,
+  },
+});

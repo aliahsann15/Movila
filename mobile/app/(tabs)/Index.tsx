@@ -1,4 +1,4 @@
-import { ActivityIndicator, FlatList, Image, ScrollView } from "react-native";
+import { ActivityIndicator, FlatList, Image, ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View } from "react-native";
 import Text from "@/components/ui/Text";
@@ -16,28 +16,28 @@ export default function Index() {
   const { data: movies, loading: moviesLoading, error: moviesError } = useFetch(() => fetchMovies({ query: '' }));
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
-      <Image source={images.bg} className="w-full absolute z-0" />
+    <SafeAreaView style={styles.safeArea}>
+      <Image source={images.bg} style={styles.bgImage} />
       <ScrollView
-        className="flex-1 px-5"
+        style={styles.scroll}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ minHeight: "100%", paddingBottom: 10 }}
       >
-        <Image source={icons.logo} className="w-32 h-32 mt-10 mb-4 mx-auto" />
+        <Image source={icons.logo} style={styles.logo} />
 
         {moviesLoading ? (
           <ActivityIndicator
             size="large"
             color="#6afdff"
-            className="mt-10 self-center"
+            style={styles.loading}
           />
         ) : moviesError ? (
           <Text>Error: {moviesError?.message}</Text>
         ) : (
-          <View className="flex-1 mt-2">
+          <View style={styles.content}>
             <SearchBar placeholder="Search for a Movie" onPress={() => { router.push('/Search') }} />
             <>
-              <Text className="text-xl mt-10 mb-5 font-bold">Latest Movies</Text>
+              <Text style={styles.sectionTitle}>Latest Movies</Text>
 
               <FlatList
                 data={movies}
@@ -54,7 +54,7 @@ export default function Index() {
                   paddingRight: 5,
                   marginBottom: 10
                 }}
-                className="mt-2 pb-32"
+                style={styles.list}
                 scrollEnabled={false}
               />
             </>
@@ -65,3 +65,44 @@ export default function Index() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#040c1c',
+  },
+  bgImage: {
+    width: '100%',
+    position: 'absolute',
+    zIndex: 0,
+  },
+  scroll: {
+    flex: 1,
+    paddingHorizontal: 20,
+  },
+  logo: {
+    width: 128,
+    height: 128,
+    marginTop: 40,
+    marginBottom: 16,
+    alignSelf: 'center',
+  },
+  loading: {
+    marginTop: 40,
+    alignSelf: 'center',
+  },
+  content: {
+    flex: 1,
+    marginTop: 8,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    marginTop: 40,
+    marginBottom: 20,
+    fontWeight: '700',
+  },
+  list: {
+    marginTop: 8,
+    paddingBottom: 128,
+  },
+});

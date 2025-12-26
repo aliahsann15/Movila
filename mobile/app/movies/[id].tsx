@@ -4,7 +4,7 @@ import { fetchMovieDetails } from '@/services/api'
 import useFetch from '@/services/useFetch'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import React from 'react'
-import { ActivityIndicator, Image, ScrollView, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Image, ScrollView, TouchableOpacity, View, StyleSheet } from 'react-native'
 
 const MovieDetails = () => {
 
@@ -18,7 +18,7 @@ const MovieDetails = () => {
 
   if (loading) {
     return (
-      <View className="flex-1 justify-center items-center">
+      <View style={styles.centerBox}>
         <ActivityIndicator size="large" />
       </View>
     )
@@ -26,73 +26,131 @@ const MovieDetails = () => {
 
   if (error) {
     return (
-      <View className="flex-1 justify-center items-center p-4">
-        <Text className="text-red-500">Error: {error.message}</Text>
+      <View style={[styles.centerBox, { padding: 16 }] }>
+        <Text style={{ color: '#ef4444' }}>Error: {error.message}</Text>
       </View>
     )
   }
 
   if (!movie) {
     return (
-      <View className="flex-1 justify-center items-center">
+      <View style={styles.centerBox}>
         <Text>No movie details found</Text>
       </View>
     )
   }
 
   return (
-    <ScrollView className="flex-1 bg-background">
+    <ScrollView style={styles.container}>
 
       {movie.backdrop_path && (
         <Image 
           source={{ uri: `https://image.tmdb.org/t/p/w500${movie.backdrop_path}` }}
-          className="w-full h-64"
+          style={styles.backdrop}
           resizeMode="cover"
         />
       )}
       
       <TouchableOpacity 
         onPress={() => router.back()}
-        className="absolute top-12 left-4 bg-black/50 rounded-full p-2"
+        style={[styles.fab, { left: 16 }]}
       >
         <Image 
           source={icons.arrow} 
-          className="w-6 h-6 rotate-180"
+          style={{ width: 24, height: 24, transform: [{ rotate: '180deg' }] }}
           tintColor="white"
         />
       </TouchableOpacity>
 
       <TouchableOpacity 
         onPress={() => {/* TODO: Implement save functionality */}}
-        className="absolute top-12 right-4 bg-black/50 rounded-full p-2"
+        style={[styles.fab, { right: 16 }]}
       >
         <Image 
           source={icons.save} 
-          className="w-6 h-6"
+          style={{ width: 24, height: 24 }}
           tintColor="white"
         />
       </TouchableOpacity>
 
-      <View className="p-4">
-        <Text className="text-2xl font-bold mb-2">{movie.title}</Text>
+      <View style={styles.content}>
+        <Text style={styles.title}>{movie.title}</Text>
         {movie.tagline && (
-          <Text className="text-lg italic mb-4">{movie.tagline}</Text>
+          <Text style={styles.tagline}>{movie.tagline}</Text>
         )}
-        <View className="flex-row gap-2 mb-4">
+        <View style={styles.genreRow}>
           {movie.genres?.map((genre) => (
-            <View key={genre.id} className="bg-light-background px-3 py-1 rounded-full">
+            <View key={genre.id} style={styles.genreChip}>
               <Text>{genre.name}</Text>
             </View>
           ))}
         </View>
-        <Text className="text-base mb-2">Rating: {movie.vote_average?.toFixed(1)}/10</Text>
-        <Text className="text-base mb-2">Release Date: {movie.release_date}</Text>
-        <Text className="text-base mb-4">Runtime: {movie.runtime} minutes</Text>
-        <Text className="text-lg font-semibold mb-2">Overview</Text>
-        <Text className="text-base text-justify">{movie.overview}</Text>
+        <Text style={styles.body}>Rating: {movie.vote_average?.toFixed(1)}/10</Text>
+        <Text style={styles.body}>Release Date: {movie.release_date}</Text>
+        <Text style={[styles.body, { marginBottom: 16 }]}>Runtime: {movie.runtime} minutes</Text>
+        <Text style={styles.sectionTitle}>Overview</Text>
+        <Text style={[styles.body, { textAlign: 'justify' }]}>{movie.overview}</Text>
       </View>
     </ScrollView>
   )
 }
 
 export default MovieDetails
+
+const styles = StyleSheet.create({
+  centerBox: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#040c1c',
+  },
+  backdrop: {
+    width: '100%',
+    height: 256,
+  },
+  fab: {
+    position: 'absolute',
+    top: 48,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    borderRadius: 9999,
+    padding: 8,
+  },
+  content: {
+    padding: 16,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+  tagline: {
+    fontSize: 18,
+    fontStyle: 'italic',
+    marginBottom: 16,
+  },
+  genreRow: {
+    flexDirection: 'row',
+    marginBottom: 16,
+    flexWrap: 'wrap',
+  },
+  genreChip: {
+    backgroundColor: '#1e293b',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 9999,
+    marginRight: 8,
+    marginBottom: 8,
+  },
+  body: {
+    fontSize: 16,
+    marginBottom: 8,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+});

@@ -6,6 +6,10 @@ import save from "@/assets/icons/save.png";
 import star from "@/assets/icons/star.png";
 import play from "@/assets/icons/play.png";
 import arrow from "@/assets/icons/arrow.png";
+import pencil from "@/assets/icons/pencil.png";
+import close from "@/assets/icons/close.png";
+import checkMark from "@/assets/icons/check-mark.png";
+import bookmark from "@/assets/icons/bookmark.png";
 
 export const icons = {
   home,
@@ -16,4 +20,8 @@ export const icons = {
   star,
   play,
   arrow,
+  pencil,
+  close,
+  checkMark,
+  bookmark,
 };

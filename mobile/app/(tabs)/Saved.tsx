@@ -1,12 +1,24 @@
 import Text from '@/components/ui/Text'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import React from 'react'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
 const Saved = () => {
   return (
     <SafeAreaView style={styles.container}>
-      <Text>Saved</Text>
+
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>My Saved Movies</Text>
+      </View>
+
+      {/* Content */}
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text style={{ color: '#94a3b8' }}>You have no saved movies yet.</Text>
+      </View>
+
+      
+
     </SafeAreaView>
   )
 }
@@ -19,5 +31,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#040c1c',
+  },
+  header: {
+    width: '100%',
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderColor: '#1f2937',
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: '700',
   },
 });

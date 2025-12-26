@@ -14,6 +14,7 @@ type AuthContextType = {
   signIn: (email: string, password: string) => Promise<void>
   signUp: (payload: { fullName: string; email: string; password: string; bio?: string; profilePictureUrl?: string }) => Promise<void>
   signOut: () => Promise<void>
+  updateProfile: (userId: string, payload: { fullName?: string; email?: string; bio?: string; password?: string; profilePictureUrl?: string }) => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -30,7 +31,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const t = await SecureStore.getItemAsync('accessToken')
         if (t) {
           setToken(t)
-          // set default header for fetch usage is done per-request below
+          // set default header for fetch usage is done per-request below 
           // try to fetch profile
           const res = await fetch(`${API_URL}/auth/me`, {
             headers: { Authorization: `Bearer ${t}` },
@@ -111,8 +112,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     router.push('/login')
   }
 
+  const updateProfile = async (userId: string, payload: { fullName?: string; email?: string; bio?: string; password?: string; profilePictureUrl?: string }) => {
+    try {
+      const t = await SecureStore.getItemAsync('accessToken')
+      if (!t) throw new Error('No token found')
+      
+      const res = await fetch(`${API_URL}/users/${userId}`, {
+        method: 'PUT',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${t}`
+        },
+        body: JSON.stringify(payload),
+      })
+      
+      if (!res.ok) {
+        const error = await res.json().catch(() => ({}))
+        throw new Error(error?.error || `HTTP ${res.status}`)
+      }
+      
+      const body = await res.json()
+      const updatedUser = body.data
+      setUser(updatedUser ?? null)
+    } catch (e) {
+      console.error('Update profile error:', e)
+      throw e
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ token, user, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ token, user, loading, signIn, signUp, signOut, updateProfile }}>
       {children}
     </AuthContext.Provider>
   )

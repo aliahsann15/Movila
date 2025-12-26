@@ -1,23 +1,63 @@
 import Text from '@/components/ui/Text'
 import { icons } from '@/constants/icons'
-import { useRouter } from 'expo-router'
+import { useRouter, Link } from 'expo-router'
 import React from 'react'
 import { Alert, Image, ScrollView, TouchableOpacity, View, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useAuth } from '@/context/AuthContext'
 
 const Profile = () => {
   const router = useRouter()
+  const { user, loading, signOut } = useAuth()
 
   const handleLogout = () => {
     Alert.alert('Logout', 'Are you sure you want to logout?', [
       { text: 'Cancel', onPress: () => {} },
-      { text: 'Logout', onPress: () => {
-        // Handle logout logic here
-        router.push('/')
+      { text: 'Logout', onPress: async () => {
+        await signOut()
       }}
     ])
   }
 
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text>Loading...</Text>
+        </View>
+      </SafeAreaView>
+    )
+  }
+
+  // Not logged in: show login and register buttons
+  if (!user) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.notLoggedInContainer}>
+          <Text style={styles.headerTitle}>Welcome to Movila</Text>
+          <Text style={[styles.lightText, { marginTop: 8, textAlign: 'center', marginBottom: 32 }]}>
+            Please log in or create an account to continue
+          </Text>
+          
+          <TouchableOpacity 
+            style={styles.loginBtn}
+            onPress={() => router.push('/login')}
+          >
+            <Text style={{ color: '#ffffff', fontWeight: '600', fontSize: 16 }}>Log In</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={styles.registerBtn}
+            onPress={() => router.push('/signup')}
+          >
+            <Text style={{ color: '#6afdff', fontWeight: '600', fontSize: 16 }}>Create Account</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    )
+  }
+
+  // Logged in: show user profile
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -33,59 +73,38 @@ const Profile = () => {
         {/* Profile Card */}
         <View style={styles.sectionWrap}>
           <View style={styles.card}>
-            <View style={styles.avatarBox}>
+            {user.profilePictureUrl ? (
               <Image 
-                source={icons.person}
-                style={{ width: 48, height: 48 }}
+                source={{ uri: user.profilePictureUrl }}
+                style={styles.profileImage}
               />
+            ) : (
+              <View style={styles.avatarBox}>
+                <Image 
+                  source={icons.person}
+                  style={{ width: 48, height: 48 }}
+                />
+              </View>
+            )}
+            <Text style={styles.name}>{user.fullName || 'User'}</Text>
+            
+            <View style={styles.infoSection}>
+              <Text style={styles.infoLabel}>Email</Text>
+              <Text style={styles.infoValue}>{user.email || 'N/A'}</Text>
             </View>
-            <Text style={styles.name}>John Doe</Text>
-            <Text style={styles.lightText}>john.doe@example.com</Text>
-            <Text style={[styles.lightText, styles.small, { marginTop: 16 }]}>Movie Enthusiast • 2 years member</Text>
+            
+            <View style={styles.infoSection}>
+              <Text style={styles.infoLabel}>Password</Text>
+              <Text style={styles.infoValue}>••••••••</Text>
+            </View>
+            
+            {user.bio && (
+              <View style={styles.infoSection}>
+                <Text style={styles.infoLabel}>Bio</Text>
+                <Text style={styles.infoValue}>{user.bio}</Text>
+              </View>
+            )}
           </View>
-        </View>
-
-        {/* Statistics */}
-        <View style={styles.sectionPad}>
-          <View style={styles.statsRow}>
-            <View style={[styles.statBox, { marginRight: 12 }]}>
-              <Text style={styles.lightSmall}>Watched</Text>
-              <Text style={styles.statValue}>24</Text>
-            </View>
-            <View style={[styles.statBox, { marginRight: 12 }]}>
-              <Text style={styles.lightSmall}>Saved</Text>
-              <Text style={styles.statValue}>12</Text>
-            </View>
-            <View style={styles.statBox}>
-              <Text style={styles.lightSmall}>Rating Avg</Text>
-              <Text style={styles.statValue}>8.2</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Menu Items */}
-        <View style={styles.menuWrap}>
-          <Text style={styles.menuTitle}>Settings</Text>
-          
-          <TouchableOpacity style={styles.menuItem}>
-            <Text>Account Settings</Text>
-            <Text style={styles.lightText}>›</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.menuItem}>
-            <Text>Preferences</Text>
-            <Text style={styles.lightText}>›</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.menuItem}>
-            <Text>Notifications</Text>
-            <Text style={styles.lightText}>›</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.menuItem}>
-            <Text>About</Text>
-            <Text style={styles.lightText}>›</Text>
-          </TouchableOpacity>
         </View>
 
         {/* Logout Button */}
@@ -136,14 +155,21 @@ const styles = StyleSheet.create({
     width: 96,
     height: 96,
     borderRadius: 48,
-    backgroundColor: '#1e293b',
+    backgroundColor: '#334155',
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 16,
+  },
+  profileImage: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
     marginBottom: 16,
   },
   name: {
     fontSize: 20,
     fontWeight: '700',
+    marginBottom: 24,
   },
   lightText: {
     color: '#94a3b8',
@@ -152,46 +178,19 @@ const styles = StyleSheet.create({
   small: {
     fontSize: 14,
   },
-  sectionPad: {
-    paddingHorizontal: 20,
-  },
-  statsRow: {
-    flexDirection: 'row',
-    marginBottom: 24,
-  },
-  statBox: {
-    flex: 1,
-    backgroundColor: '#1e293b',
-    borderRadius: 8,
-    padding: 16,
-  },
-  lightSmall: {
-    color: '#94a3b8',
-    fontSize: 14,
-  },
-  statValue: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#22d3ee',
-    marginTop: 8,
-  },
-  menuWrap: {
-    paddingHorizontal: 20,
-    marginBottom: 24,
-  },
-  menuTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+  infoSection: {
+    width: '100%',
     marginBottom: 16,
   },
-  menuItem: {
-    backgroundColor: '#1e293b',
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+  infoLabel: {
+    color: '#94a3b8',
+    fontSize: 12,
+    marginBottom: 4,
+    textTransform: 'uppercase',
+  },
+  infoValue: {
+    color: '#ffffff',
+    fontSize: 16,
   },
   logoutWrap: {
     paddingHorizontal: 20,
@@ -202,5 +201,28 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 16,
     alignItems: 'center',
+  },
+  notLoggedInContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 40,
+  },
+  loginBtn: {
+    backgroundColor: '#6afdff',
+    borderRadius: 8,
+    padding: 16,
+    alignItems: 'center',
+    width: '100%',
+    marginBottom: 12,
+  },
+  registerBtn: {
+    backgroundColor: 'transparent',
+    borderRadius: 8,
+    padding: 16,
+    alignItems: 'center',
+    width: '100%',
+    borderWidth: 2,
+    borderColor: '#6afdff',
   },
 });

@@ -5,6 +5,8 @@ import morgan from 'morgan';
 import compression from 'compression';
 
 import metricsRoutes from './routes/metricsRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 import errorHandler from './middleware/errorHandler.js';
 
 const app: Application = express();
@@ -44,13 +46,16 @@ app.get('/api', (req: Request, res: Response) => {
     version: '1.0.0',
     endpoints: {
       health: '/health',
-      metrics: '/api/metrics'
+      metrics: '/api/metrics',
+      auth: '/api/auth'
     }
   });
 });
 
 // API routes
 app.use('/api/metrics', metricsRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 
 // 404 handler
 app.use((req: Request, res: Response) => {

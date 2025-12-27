@@ -123,6 +123,7 @@ export const remove = async (req: Request, res: Response, next: NextFunction) =>
 
 export const getSavedMovies = async (req: Request, res: Response, next: NextFunction) => {
 	try {
+		console.log('Fetching saved movies for user:', req.params.id);
 		const user = await UserModel.findById(req.params.id).select('savedMovies');
 		if (!user) {
 			res.status(404).json({ success: false, error: 'User not found' });

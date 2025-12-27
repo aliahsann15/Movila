@@ -1,5 +1,6 @@
 import Text from '@/components/ui/Text'
 import { icons } from '@/constants/icons'
+import { useAuth } from '@/context/AuthContext'
 import { fetchMovieDetails } from '@/services/api'
 import useFetch from '@/services/useFetch'
 import { useLocalSearchParams, useRouter } from 'expo-router'
@@ -7,6 +8,29 @@ import React from 'react'
 import { ActivityIndicator, Image, ScrollView, TouchableOpacity, View, StyleSheet } from 'react-native'
 
 const MovieDetails = () => {
+
+  const API_BASE = process.env.EXPO_PUBLIC_API_BASE || "http://192.168.100.194:5000/api"
+  const { user, token } = useAuth()
+  const userID = user?._id || user?.id
+
+  const handleSaveMovie = async () => {
+    const response = await fetch(`${API_BASE}/users/${userID}/saved`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ movie }),
+    })
+
+    if (!response.ok) {
+      console.warn('Failed to save movie')
+      return
+    }
+
+    console.log('Movie saved successfully')
+
+  }
 
   // fetch movie details using the id from the route params
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -26,7 +50,7 @@ const MovieDetails = () => {
 
   if (error) {
     return (
-      <View style={[styles.centerBox, { padding: 16 }] }>
+      <View style={[styles.centerBox, { padding: 16 }]}>
         <Text style={{ color: '#ef4444' }}>Error: {error.message}</Text>
       </View>
     )
@@ -44,30 +68,30 @@ const MovieDetails = () => {
     <ScrollView style={styles.container}>
 
       {movie.backdrop_path && (
-        <Image 
+        <Image
           source={{ uri: `https://image.tmdb.org/t/p/w500${movie.backdrop_path}` }}
           style={styles.backdrop}
           resizeMode="cover"
         />
       )}
-      
-      <TouchableOpacity 
+
+      <TouchableOpacity
         onPress={() => router.back()}
         style={[styles.fab, { left: 16 }]}
       >
-        <Image 
-          source={icons.arrow} 
+        <Image
+          source={icons.arrow}
           style={{ width: 24, height: 24, transform: [{ rotate: '180deg' }] }}
           tintColor="white"
         />
       </TouchableOpacity>
 
-      <TouchableOpacity 
-        onPress={() => {/* TODO: Implement save functionality */}}
+      <TouchableOpacity
+        onPress={() => handleSaveMovie()}
         style={[styles.fab, { right: 16 }]}
       >
-        <Image 
-          source={icons.save} 
+        <Image
+          source={icons.save}
           style={{ width: 24, height: 24 }}
           tintColor="white"
         />

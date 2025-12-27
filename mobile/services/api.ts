@@ -1,3 +1,6 @@
+
+let movies: any[] = []
+
 export const TMDB_CONFIG = {
     BASE_URL: 'https://api.themoviedb.org/3',
     API_KEY: process.env.EXPO_PUBLIC_MOVIE_API_KEY,
@@ -23,6 +26,7 @@ export const fetchMovies = async ({ query }: { query: string }) => {
     }
 
     const data = await response.json();
+    movies = data.results;
     return data.results;
 }
 
@@ -40,4 +44,13 @@ export const fetchMovieDetails = async (id: string | number) => {
 
     const data = await response.json();
     return data;
+}
+
+export const fetchSavedMovies = async (ids: string[] | number[]) => {
+    const savedMovies = []
+    for (const id of ids) {
+        const movie = await fetchMovieDetails(id);
+        savedMovies.push(movie);
+    }
+    return savedMovies;
 }

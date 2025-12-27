@@ -24,11 +24,8 @@ const MovieDetails = () => {
     })
 
     if (!response.ok) {
-      console.warn('Failed to save movie')
       return
     }
-
-    console.log('Movie saved successfully')
 
   }
 

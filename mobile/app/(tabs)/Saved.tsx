@@ -27,13 +27,11 @@ const Saved = () => {
       return typeof id === 'string' && /^[a-fA-F0-9]{24}$/.test(id)
     }
     const fetchSavedMovies = async () => {
+      // If user or userID is not present, skip fetching
+      if (!user || !userID) return;
+      if (!isValidObjectId(userID)) return;
       setMoviesLoading(true)
       setMoviesError(null)
-      // Validate userID format
-      if (!isValidObjectId(userID)) {
-        Alert.alert('Error', 'Invalid user ID format')
-        return
-      }
 
       // Fetch saved movies from backend
       const response = await fetch(`${API_BASE}/users/${userID}/saved`, {
@@ -57,7 +55,7 @@ const Saved = () => {
       setSavedMovies(result.data)
     }
     fetchSavedMovies()
-  }, [userID, API_BASE, token])
+  }, [user, userID, API_BASE, token])
 
   if (!user) {
     return (
@@ -85,51 +83,51 @@ const Saved = () => {
       )}
 
       {savedMovies.length > 0 && (
-          <ScrollView
-            style={styles.scroll}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ minHeight: "100%", paddingBottom: 10 }}
-          >
+        <ScrollView
+          style={styles.scroll}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ minHeight: "100%", paddingBottom: 10 }}
+        >
 
-            {moviesLoading ? (
-              <ActivityIndicator
-                size="large"
-                color="#6afdff"
-                style={styles.loading}
-              />
+          {moviesLoading ? (
+            <ActivityIndicator
+              size="large"
+              color="#6afdff"
+              style={styles.loading}
+            />
 
-            ) : moviesError ? (
-              <Text>Error: {moviesError?.message}</Text>
-            ) : (
+          ) : moviesError ? (
+            <Text>Error: {moviesError?.message}</Text>
+          ) : (
 
-              <View style={styles.content}>
-                <>
-                  <FlatList
-                    data={savedMovies}
-                    renderItem={({ item }) => (
-                      <MovieCard
-                        {...item}
-                        cardStyle={{ width: 110, marginRight: 0, marginBottom: 10 }}
-                      />
-                    )}
-                    keyExtractor={(item) => item.id.toString()}
-                    numColumns={3}
-                    columnWrapperStyle={{
-                      justifyContent: 'flex-start',
-                      gap: 20,
-                      paddingRight: 5,
-                      marginBottom: 10
-                    }}
-                    style={styles.list}
-                    scrollEnabled={false}
-                  />
-                </>
-              </View>
-            )}
+            <View style={styles.content}>
+              <>
+                <FlatList
+                  data={savedMovies}
+                  renderItem={({ item }) => (
+                    <MovieCard
+                      {...item}
+                      cardStyle={{ width: 110, marginRight: 0, marginBottom: 10 }}
+                    />
+                  )}
+                  keyExtractor={(item) => item.id.toString()}
+                  numColumns={3}
+                  columnWrapperStyle={{
+                    justifyContent: 'flex-start',
+                    gap: 20,
+                    paddingRight: 5,
+                    marginBottom: 10
+                  }}
+                  style={styles.list}
+                  scrollEnabled={false}
+                />
+              </>
+            </View>
+          )}
 
-          </ScrollView>
+        </ScrollView>
       )}
-      
+
     </SafeAreaView>
   )
 }

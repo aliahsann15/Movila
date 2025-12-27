@@ -199,6 +199,7 @@ const styles = StyleSheet.create({
   scroll: {
     flex: 1,
     paddingHorizontal: 16,
+    paddingBottom: 100,
   },
   logo: {
     width: 128,

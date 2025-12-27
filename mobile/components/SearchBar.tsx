@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         paddingHorizontal: 20,
         paddingVertical: 4,
+        marginBottom: 20,
     },
     icon: {
         width: 20,

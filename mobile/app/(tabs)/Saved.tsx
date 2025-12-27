@@ -109,6 +109,7 @@ const Saved = () => {
                     renderItem={({ item }) => (
                       <MovieCard
                         {...item}
+                        cardStyle={{ width: 110, marginRight: 0, marginBottom: 10 }}
                       />
                     )}
                     keyExtractor={(item) => item.id.toString()}
@@ -128,9 +129,7 @@ const Saved = () => {
 
           </ScrollView>
       )}
-
-
-
+      
     </SafeAreaView>
   )
 }

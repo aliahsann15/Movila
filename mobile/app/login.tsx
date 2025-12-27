@@ -25,11 +25,8 @@ const Login = () => {
         
         setLoggingIn(true)
         try {
-            console.log('Starting login with email:', email)
             await signIn(email, password)
-            console.log('Login successful!')
         } catch (e) {
-            console.error('Login error:', e)
             // @ts-ignore
             Alert.alert('Login Failed', e?.message || 'Login failed')
         } finally {
